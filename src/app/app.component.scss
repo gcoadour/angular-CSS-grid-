@@ -1,73 +1,12 @@
-$screen-xs: 320px; // = $screen-xs-min
-$screen-sm: 768px; // = $screen-sm
-$screen-ms: 800px; // = $screen-ms (renommer ?)
-$screen-md: 992px; // = $screen-md-min
-$screen-lg: 1200px; // = $screen-lg
 div {
   border: 1px solid black;
 }
-.row {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-}
 
-@media (min-width: $screen-sm) {
-  .col-sm-1 {
-    grid-column: span 1;
-  }
-  .col-sm-2 {
-    grid-column: span 2;
-  }
-  .col-sm-3 {
-    grid-column: span 3;
-  }
-  .col-sm-4 {
-    grid-column: span 4;
-  }
-  .col-sm-5 {
-    grid-column: span 5;
-  }
-  .col-sm-6 {
-    grid-column: span 6;
-  }
-  .col-sm-7 {
-    grid-column: span 7;
-  }
-  .col-sm-8 {
-    grid-column: span 8;
-  }
-  .col-sm-9 {
-    grid-column: span 9;
-  }
-  .col-sm-10 {
-    grid-column: span 10;
-  }
-  .col-sm-11 {
-    grid-column: span 11;
-  }
-  .col-sm-12 {
-    grid-column: span 12;
-  }
-}
-@function breakpoint-min($name, $breakpoints: $grid-breakpoints) {
-  $min: map-get($breakpoints, $name);
-  @return if($min != 0, $min, null);
-}
-
-@function breakpoint-infix($name, $breakpoints: $grid-breakpoints) {
-  @return if(breakpoint-min($name, $breakpoints) == null, '', '-#{$name}');
-}
-
-@mixin media-breakpoint-up($name, $breakpoints: $grid-breakpoints) {
-  $min: breakpoint-min($name, $breakpoints);
-  @if $min {
-    @media (min-width: $min) {
-      @content;
-    }
-  } @else {
-    @content;
-  }
-}
+$screen-xs: 320px; 
+$screen-sm: 768px; 
+$screen-ms: 800px; 
+$screen-md: 992px; 
+$screen-lg: 1200px; 
 
 $grid-breakpoints: (
   xs: $screen-xs,
@@ -76,25 +15,23 @@ $grid-breakpoints: (
   md: $screen-md,
   lg: $screen-lg,
 );
+
 $grid-columns: 12;
+
 @mixin make-cssgrid($columns: $grid-columns, $breakpoints: $grid-breakpoints) {
   @each $breakpoint in map-keys($breakpoints) {
-    $infix: breakpoint-infix($breakpoint, $breakpoints);
-
-    @include media-breakpoint-up($breakpoint, $breakpoints) {
-      @if $columns > 0 {
+    @media (min-width: map-get($breakpoints, $breakpoint)) {
         @for $i from 1 through $columns {
-          .g-col#{$infix}-#{$i} {
+          .col-#{$breakpoint}-#{$i} {
             grid-column: span $i;
           }
         }
-      }
     }
   }
 }
 
-.grid {
+.row {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
+  grid-template-columns: repeat($grid-columns, 1fr);
   @include make-cssgrid();
 }
